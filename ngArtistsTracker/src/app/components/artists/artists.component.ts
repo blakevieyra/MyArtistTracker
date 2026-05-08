@@ -54,11 +54,15 @@ export class ArtistsComponent {
   newSongSelected: boolean = false;
   editSongSelected: boolean = false;
   editArtistSelected: boolean = false;
+  artistImages: { [name: string]: string } = {};
+  spotifyTopTracks: any[] = [];
+  spotifyAlbums: any[] = [];
 
   ngOnInit(): void {
     this.reload();
     this.spotifyService.getToken().subscribe((token) => {
       this.token = token;
+      this.loadArtistImages();
     });
     this.activateRoute.paramMap.subscribe({
       next: (params) => {
@@ -107,6 +111,7 @@ export class ArtistsComponent {
     this.artistService.index().subscribe({
       next: (artist) => {
         this.artists = artist;
+        if (this.token) this.loadArtistImages();
       },
       error: (problem) => {
         console.error('ArtistsComponent.reload(): error loading artists: ');
@@ -138,9 +143,37 @@ export class ArtistsComponent {
     });
   }
 
+  loadArtistImages(): void {
+    if (!this.token) return;
+    this.artists.forEach(a => {
+      if (!this.artistImages[a.name]) {
+        this.spotifyService.searchArtist(this.token, a.name).subscribe(result => {
+          if (result?.images?.[0]?.url) {
+            this.artistImages[a.name] = result.images[0].url;
+          }
+        });
+      }
+    });
+  }
+
   displayArtists(artist: Artist) {
-    // this.searchTrack(artist.name, artist.band);
     this.selected = artist;
+    this.spotifyTopTracks = [];
+    this.spotifyAlbums = [];
+    this.songDetail = null;
+    if (this.token) {
+      this.spotifyService.searchArtist(this.token, artist.name).subscribe(result => {
+        if (result) {
+          this.songDetail = result;
+          this.spotifyService.getArtistTopTracks(this.token, result.id).subscribe(tracks => {
+            this.spotifyTopTracks = tracks;
+          });
+          this.spotifyService.getArtistAlbums(this.token, result.id).subscribe(albums => {
+            this.spotifyAlbums = albums;
+          });
+        }
+      });
+    }
   }
 
   displayTable() {

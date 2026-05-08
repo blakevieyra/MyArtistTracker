@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Artist } from './../../models/artist';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ArtistService } from '../../services/artist.service';
 import { RegisterComponent } from '../register/register.component';
@@ -31,16 +31,17 @@ export class HomeComponent implements OnInit {
     private route: Router
   ) {}
 
-  selected: boolean = false;
-  newArtist: Artist | null = null;
-  favorite: boolean = false;
-  artists: Artist[] = [];
   keyword: string = '';
-  trackDetail: any;
   token: string = '';
-  selectedSong: string = '';
-  songDetail: any;
-  artistInfo: any;
+  searchType: string = 'artist';
+
+  spotifyArtists: any[] = [];
+  spotifyTracks: any[] = [];
+  selectedArtist: any = null;
+  relatedArtists: any[] = [];
+  artistTopTracks: any[] = [];
+  artistAlbums: any[] = [];
+  addedMessage: string = '';
 
   ngOnInit(): void {
     this.spotifyService.getToken().subscribe((token) => {
@@ -48,86 +49,77 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  loadArtists(): void {
-    this.artistService.all().subscribe({
-      next: (artist) => {
-        this.artists = artist;
-        // console.log(this.artists);
-      },
-      error: (problem) => {
-        console.error(
-          'ArtistComponent.loadArtists(): error loading all artists: '
-        );
-        console.error(problem);
-      },
-    });
-  }
-  toggleSelected() {
-    this.selected = true;
-  }
-
-  keywordSearch(keyword: string): void {
-    this.artistService.searchArtist(keyword).subscribe({
-      next: (artist) => {
-        this.artists = artist;
-        //console.log(this.artists);
-      },
-      error: (problem) => {
-        console.error(
-          'ArtistComponent.loadArtists(): error keyword searching artists: '
-        );
-        console.error(problem);
-      },
-    });
-  }
-
-  addArtistToUser(artist: Artist) {
-    this.artistService.create(artist).subscribe({
-      next: (createdArtist) => {
-        this.newArtist = new Artist();
-        //this.loadArtists();
-      },
-      error: () => {},
-    });
-  }
-
-  removeArtistFromUser(artist: Artist) {
-    this.artistService.destroy(artist.id).subscribe({
-      next: () => {
-        // this.loadArtists();
-      },
-      error: () => {},
-    });
-  }
-
   loggedIn(): boolean {
     return this.auth.checkLogin();
   }
 
-  toggleArtist(event: any, artist: any): void {
-    if (event.target.checked) {
-      this.addArtistToUser(artist);
+  search(): void {
+    if (!this.keyword.trim() || !this.token) return;
+    this.selectedArtist = null;
+    this.relatedArtists = [];
+    this.artistTopTracks = [];
+    this.artistAlbums = [];
+
+    if (this.searchType === 'artist') {
+      this.spotifyService.searchArtists(this.token, this.keyword, 12).subscribe(artists => {
+        this.spotifyArtists = artists;
+        this.spotifyTracks = [];
+      });
     } else {
-      this.removeArtistFromUser(artist);
+      this.spotifyService.searchTracks(this.token, this.keyword, 15).subscribe(tracks => {
+        this.spotifyTracks = tracks;
+        this.spotifyArtists = [];
+      });
     }
   }
-  searchArtist(query: string) {
-    return this.spotifyService
-      .searchArtist(this.token, query)
-      .subscribe((artist: any) => {
-        this.songDetail = artist;
-        console.log(this.songDetail);
-      });
-  }
-  setEditSong() {
-    this.selected = Object.assign({}, this.selected);
+
+  selectArtist(artist: any): void {
+    this.selectedArtist = artist;
+    this.spotifyService.getRelatedArtists(this.token, artist.id).subscribe(related => {
+      this.relatedArtists = related.slice(0, 8);
+    });
+    this.spotifyService.getArtistTopTracks(this.token, artist.id).subscribe(tracks => {
+      this.artistTopTracks = tracks;
+    });
+    this.spotifyService.getArtistAlbums(this.token, artist.id).subscribe(albums => {
+      this.artistAlbums = albums;
+    });
   }
 
-  setNewSong() {
-    this.selected = Object.assign({}, this.selected);
+  addToFavorites(artist: any): void {
+    const newArtist = new Artist();
+    newArtist.name = artist.name;
+    newArtist.band = artist.genres?.[0] || '';
+    this.artistService.create(newArtist).subscribe({
+      next: () => {
+        this.addedMessage = `Added "${artist.name}" to your favorites!`;
+        setTimeout(() => this.addedMessage = '', 3000);
+      },
+      error: () => {
+        this.addedMessage = `Could not add "${artist.name}" (may already exist).`;
+        setTimeout(() => this.addedMessage = '', 3000);
+      },
+    });
   }
 
-  getInfo(artist: Artist) {
-    this.artistInfo = artist;
+  backToResults(): void {
+    this.selectedArtist = null;
+    this.relatedArtists = [];
+    this.artistTopTracks = [];
+    this.artistAlbums = [];
+  }
+
+  getArtistImage(artist: any): string {
+    return artist?.images?.[0]?.url || 'https://via.placeholder.com/200?text=No+Image';
+  }
+
+  getTrackImage(track: any): string {
+    return track?.album?.images?.[0]?.url || 'https://via.placeholder.com/60?text=No+Art';
+  }
+
+  formatDuration(ms: number): string {
+    const min = Math.floor(ms / 60000);
+    const sec = Math.floor((ms % 60000) / 1000);
+    return `${min}:${sec < 10 ? '0' : ''}${sec}`;
   }
 }
