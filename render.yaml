@@ -12,10 +12,8 @@ services:
     plan: free
     dockerfilePath: ./RESTArtistsTracker/Dockerfile
     dockerContext: .
-    healthCheckPath: /authenticate
+    healthCheckPath: /
     envVars:
-      - key: PORT
-        value: 8083
       - key: DB_HOST
         fromDatabase:
           name: artiststracker-db
