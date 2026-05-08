@@ -1,0 +1,60 @@
+databases:
+  - name: artiststracker-db
+    plan: free
+    databaseName: artiststrackerdb
+    user: artistsuser
+
+services:
+  # Spring Boot Backend API
+  - type: web
+    name: artiststracker-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./RESTArtistsTracker/Dockerfile
+    dockerContext: .
+    healthCheckPath: /authenticate
+    envVars:
+      - key: PORT
+        value: 8083
+      - key: DATABASE_URL
+        fromDatabase:
+          name: artiststracker-db
+          property: connectionString
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: artiststracker-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: artiststracker-db
+          property: password
+      - key: DATABASE_DRIVER
+        value: org.postgresql.Driver
+      - key: HIBERNATE_DIALECT
+        value: org.hibernate.dialect.PostgreSQLDialect
+      - key: DDL_AUTO
+        value: update
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: artiststracker-db
+          property: connectionString
+
+  # Angular Frontend (static site served via Docker/nginx)
+  - type: web
+    name: artiststracker-frontend
+    runtime: static
+    buildCommand: cd ngArtistsTracker && npm ci && npx ng build --configuration production
+    staticPublishPath: ./ngArtistsTracker/dist/ng-artists-tracker/browser
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://artiststracker-api.onrender.com/api/*
+      - type: rewrite
+        source: /register
+        destination: https://artiststracker-api.onrender.com/register
+      - type: rewrite
+        source: /authenticate
+        destination: https://artiststracker-api.onrender.com/authenticate
+      - type: rewrite
+        source: /*
+        destination: /index.html

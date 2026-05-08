@@ -8,6 +8,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { AboutComponent } from './components/about/about.component';
+import { EventsComponent } from './components/events/events.component';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'home' },
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: 'artist/:artistId', component: ArtistsComponent },
   { path: 'songs', component: SongsComponent },
   { path: 'songs/:songsId', component: SongsComponent },
+  { path: 'events', component: EventsComponent },
   { path: 'navigation', component: NavigationComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },

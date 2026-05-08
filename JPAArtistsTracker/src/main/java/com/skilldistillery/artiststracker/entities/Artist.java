@@ -36,6 +36,10 @@ public class Artist {
 	@JsonIgnore
 	@OneToMany(mappedBy = "artist")
 	private List<Song> songs;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "artist")
+	private List<Event> events;
 	
 
 	public void addUser(User user) {
@@ -86,6 +90,14 @@ public class Artist {
 
 	public void setSongs(List<Song> songs) {
 		this.songs = songs;
+	}
+
+	public List<Event> getEvents() {
+		return events;
+	}
+
+	public void setEvents(List<Event> events) {
+		this.events = events;
 	}
 
 	public String getImage() {

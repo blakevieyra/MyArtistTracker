@@ -1,0 +1,158 @@
+<div class="container mt-4">
+  <h1 class="text-center mb-4">
+    <i class="bi bi-ticket-perforated"></i> Ticket Tracker
+  </h1>
+  <p class="text-center text-muted mb-4">Find concerts and events for your favorite artists via StubHub</p>
+
+  <!-- Search Bar -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-8">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="searchKeyword"
+          placeholder="Search events by name, venue, or city..."
+          (keyup.enter)="searchEvents()"
+        />
+        <button class="btn btn-primary" (click)="searchEvents()">
+          Search Events
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-4 justify-content-center">
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [class.active]="activeTab === 'upcoming'"
+        (click)="setTab('upcoming')"
+        style="cursor: pointer"
+      >
+        Upcoming Events ({{ upcomingEvents.length }})
+      </a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [class.active]="activeTab === 'tracked'"
+        (click)="setTab('tracked')"
+        style="cursor: pointer"
+      >
+        My Tracked Events ({{ trackedEvents.length }})
+      </a>
+    </li>
+    <li class="nav-item" *ngIf="searchResults.length > 0">
+      <a
+        class="nav-link"
+        [class.active]="activeTab === 'search'"
+        (click)="setTab('search')"
+        style="cursor: pointer"
+      >
+        Search Results ({{ searchResults.length }})
+      </a>
+    </li>
+  </ul>
+
+  <!-- Upcoming Events -->
+  <div *ngIf="activeTab === 'upcoming'">
+    <div *ngIf="upcomingEvents.length === 0" class="text-center text-muted py-5">
+      <h4>No upcoming events found</h4>
+      <p>Add artists to your favorites to see their upcoming concerts and events here.</p>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-lg-4 mb-4" *ngFor="let event of upcomingEvents">
+        <ng-container *ngTemplateOutlet="eventCard; context: { $implicit: event }"></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tracked Events -->
+  <div *ngIf="activeTab === 'tracked'">
+    <div *ngIf="trackedEvents.length === 0" class="text-center text-muted py-5">
+      <h4>No tracked events</h4>
+      <p>Click "Track" on any event to add it to your tracked list and get notified about ticket updates.</p>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-lg-4 mb-4" *ngFor="let event of trackedEvents">
+        <ng-container *ngTemplateOutlet="eventCard; context: { $implicit: event }"></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Results -->
+  <div *ngIf="activeTab === 'search'">
+    <div *ngIf="searchResults.length === 0" class="text-center text-muted py-5">
+      <h4>No events found</h4>
+      <p>Try a different search term.</p>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-lg-4 mb-4" *ngFor="let event of searchResults">
+        <ng-container *ngTemplateOutlet="eventCard; context: { $implicit: event }"></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Event Card Template -->
+<ng-template #eventCard let-event>
+  <div class="card h-100 shadow-sm event-card">
+    <div class="card-header bg-dark text-white">
+      <h6 class="card-title mb-0">{{ event.artist?.name || 'Unknown Artist' }}</h6>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">{{ event.name }}</h5>
+      <div class="mb-2">
+        <small class="text-muted">
+          <strong>Venue:</strong> {{ event.venue || 'TBD' }}
+        </small>
+      </div>
+      <div class="mb-2">
+        <small class="text-muted">
+          <strong>Location:</strong>
+          {{ event.city }}<span *ngIf="event.state">, {{ event.state }}</span>
+          <span *ngIf="event.country"> ({{ event.country }})</span>
+        </small>
+      </div>
+      <div class="mb-2">
+        <small class="text-muted">
+          <strong>Date:</strong> {{ formatDate(event.eventDate) }}
+        </small>
+      </div>
+      <div class="mb-3">
+        <span class="badge bg-success">
+          {{ formatPrice(event.minPrice, event.maxPrice, event.currency) }}
+        </span>
+        <span class="badge bg-info ms-1">
+          {{ getTicketSource(event.source) }}
+        </span>
+      </div>
+    </div>
+    <div class="card-footer d-flex justify-content-between">
+      <a
+        *ngIf="event.ticketUrl"
+        [href]="event.ticketUrl"
+        target="_blank"
+        class="btn btn-sm btn-outline-primary"
+      >
+        Buy Tickets
+      </a>
+      <button
+        *ngIf="!isTracked(event)"
+        class="btn btn-sm btn-success"
+        (click)="trackEvent(event)"
+      >
+        Track
+      </button>
+      <button
+        *ngIf="isTracked(event)"
+        class="btn btn-sm btn-outline-danger"
+        (click)="untrackEvent(event)"
+      >
+        Untrack
+      </button>
+    </div>
+  </div>
+</ng-template>

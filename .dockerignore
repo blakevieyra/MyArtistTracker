@@ -1,0 +1,9 @@
+.git
+node_modules
+ngArtistsTracker/node_modules
+ngArtistsTracker/dist
+RESTArtistsTracker/build
+JPAArtistsTracker/build
+*.class
+*.jar
+*.war
