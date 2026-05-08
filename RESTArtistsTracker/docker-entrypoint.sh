@@ -27,4 +27,9 @@ if [ -n "$SPRING_DATASOURCE_URL" ]; then
   fi
 fi
 
+# Ensure Spring Boot uses the correct port (Render sets PORT=10000 for Docker services)
+if [ -n "$PORT" ]; then
+  export SERVER_PORT="$PORT"
+fi
+
 exec java -jar app.war
