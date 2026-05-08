@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class User {
@@ -38,7 +39,35 @@ public class User {
 	@ManyToMany
 	@JoinTable(name = "user_has_artist", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "artist_id"))
 	private List<Artist> favoriteArtists;
+
+	@JsonIgnore
+	@ManyToMany
+	@JoinTable(name = "user_tracked_event", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "event_id"))
+	private List<Event> trackedEvents;
 	
+
+	public List<Event> getTrackedEvents() {
+		return trackedEvents;
+	}
+
+	public void setTrackedEvents(List<Event> trackedEvents) {
+		this.trackedEvents = trackedEvents;
+	}
+
+	public void trackEvent(Event event) {
+		if (trackedEvents == null) {
+			trackedEvents = new ArrayList<>();
+		}
+		if (!trackedEvents.contains(event)) {
+			trackedEvents.add(event);
+		}
+	}
+
+	public void untrackEvent(Event event) {
+		if (trackedEvents != null) {
+			trackedEvents.remove(event);
+		}
+	}
 
 	public void addArtist(Artist artist) {
 		if (favoriteArtists == null) {

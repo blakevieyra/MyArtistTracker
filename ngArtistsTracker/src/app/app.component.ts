@@ -9,6 +9,7 @@ import { SongsComponent } from './components/songs/songs.component';
 import { AboutComponent } from './components/about/about.component';
 import { ArtistsComponent } from './components/artists/artists.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
+import { EventsComponent } from './components/events/events.component';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ import { CarouselComponent } from './components/carousel/carousel.component';
     ArtistsComponent,
     SongsComponent,
     AboutComponent,
-    CarouselComponent
+    CarouselComponent,
+    EventsComponent
   ],
 
   templateUrl: './app.component.html',

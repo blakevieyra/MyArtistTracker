@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: artiststracker-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: artiststrackerdb
+      MYSQL_USER: artistsuser
+      MYSQL_PASSWORD: artistsuser
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./DB/artiststracker.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./DB/events_migration.sql:/docker-entrypoint-initdb.d/02-events.sql
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "artistsuser", "-partistsuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: RESTArtistsTracker/Dockerfile
+    container_name: artiststracker-backend
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/artiststrackerdb?useSSL=false&useLegacyDatetimeCode=false&serverTimezone=US/Mountain
+      SPRING_DATASOURCE_USERNAME: artistsuser
+      SPRING_DATASOURCE_PASSWORD: artistsuser
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./ngArtistsTracker
+      dockerfile: Dockerfile
+    container_name: artiststracker-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:
