@@ -16,10 +16,18 @@ services:
     envVars:
       - key: PORT
         value: 8083
-      - key: DATABASE_URL
+      - key: DB_HOST
         fromDatabase:
           name: artiststracker-db
-          property: connectionString
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: artiststracker-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: artiststracker-db
+          property: database
       - key: DATABASE_USERNAME
         fromDatabase:
           name: artiststracker-db
@@ -28,16 +36,6 @@ services:
         fromDatabase:
           name: artiststracker-db
           property: password
-      - key: DATABASE_DRIVER
-        value: org.postgresql.Driver
-      - key: HIBERNATE_DIALECT
-        value: org.hibernate.dialect.PostgreSQLDialect
-      - key: DDL_AUTO
-        value: update
-      - key: SPRING_DATASOURCE_URL
-        fromDatabase:
-          name: artiststracker-db
-          property: connectionString
 
   # Angular Frontend (static site served via Docker/nginx)
   - type: web
