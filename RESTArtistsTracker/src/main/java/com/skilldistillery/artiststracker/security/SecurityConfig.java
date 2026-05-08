@@ -1,6 +1,8 @@
 package com.skilldistillery.artiststracker.security;
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import java.util.Arrays;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,28 +14,41 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 public class SecurityConfig {
 
-    // this you get for free when you configure the db connection in application.properties file
     @Autowired
     private DataSource dataSource;
 
-    // this bean is created in the application starter class if you're looking for it
     @Autowired
     private PasswordEncoder encoder;
 	
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(false);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     @Bean 
     SecurityFilterChain createFilterChain(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http.csrf(csrf -> csrf.disable());
-        http.httpBasic(withDefaults());                           // Use HTTP Basic Authentication
+        http.httpBasic(withDefaults());
         http.authorizeHttpRequests(
           authorize -> authorize
-            .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll() // For CORS, the preflight request
-            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()     // will hit the OPTIONS on the route
-            .requestMatchers("/api/**").authenticated() // Requests for our REST API must be authorized.
-            .anyRequest().permitAll());                 // All other requests are allowed without authentication.
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+            .requestMatchers("/api/**").authenticated()
+            .anyRequest().permitAll());
 
         http.sessionManagement(management -> management
                               .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
