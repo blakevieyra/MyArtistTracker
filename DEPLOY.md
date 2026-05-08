@@ -77,25 +77,65 @@ docker compose down -v
 
 ---
 
-## Deploy to Railway / Render / Fly.io
+## Deploy to Render (Recommended for this project)
 
-These platforms support Docker Compose or individual container deployment:
+Render uses **Blueprints** (`render.yaml`) to deploy multi-service apps. This repo includes a ready-to-use `render.yaml`.
 
-### Railway
-```bash
-# Install Railway CLI
-npm install -g @railway/cli
+### One-Click Deploy
 
-# Login and deploy
-railway login
-railway init
-railway up
-```
+1. Push this repo to GitHub
+2. Go to [Render Dashboard](https://dashboard.render.com)
+3. Click **New** → **Blueprint**
+4. Connect your GitHub repo (select `MyArtistTracker`)
+5. Render detects `render.yaml` and shows 3 resources:
+   - `artiststracker-api` (Spring Boot backend - Docker)
+   - `artiststracker-frontend` (Angular static site)
+   - `artiststracker-db` (Postgres database)
+6. Click **Apply** — Render builds and deploys everything
 
-### Render
-- Create a new "Blueprint" from your GitHub repo
-- Render will auto-detect the `docker-compose.yml`
-- Or deploy each service separately as a Web Service
+### After First Deploy
+
+The database starts empty. Hibernate auto-creates tables (`ddl-auto=update`), but you need seed data:
+
+1. Go to your `artiststracker-db` in the Render Dashboard
+2. Click **Shell** or use the external connection string
+3. Run the seed script:
+   ```bash
+   psql $DATABASE_URL < DB/seed_postgres.sql
+   ```
+   Or paste the contents of `DB/seed_postgres.sql` into the Render DB shell.
+
+### What Gets Created
+
+| Service | Type | URL |
+|---------|------|-----|
+| `artiststracker-api` | Web Service (Docker) | `https://artiststracker-api.onrender.com` |
+| `artiststracker-frontend` | Static Site | `https://artiststracker-frontend.onrender.com` |
+| `artiststracker-db` | Postgres DB | Internal connection |
+
+### Custom Domain
+
+1. Go to your frontend service → **Settings** → **Custom Domains**
+2. Add your domain and update DNS as instructed
+
+### Important Notes
+
+- **Free tier**: Services sleep after 15 min of inactivity (first request takes ~30s to wake)
+- **Database**: Render free Postgres has 1GB storage and expires after 90 days
+- **Upgrade**: Use `starter` plan ($7/mo per service) for always-on performance
+- The backend uses Postgres on Render (via env vars) but MySQL locally for development
+
+---
+
+## Deploy to Railway
+
+### Steps
+1. Install Railway CLI: `npm install -g @railway/cli`
+2. Login: `railway login`
+3. Init: `railway init`
+4. Add a MySQL service in the Railway dashboard
+5. Set environment variables for the backend
+6. Deploy: `railway up`
 
 ---
 
