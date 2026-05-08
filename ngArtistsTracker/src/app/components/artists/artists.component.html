@@ -91,11 +91,11 @@
               <br><br>
               <h1>{{selected.name}}</h1>
               <br>
-              <div class="song-detail">
+              <div class="song-detail" *ngIf="songDetail && songDetail.images && songDetail.images.length > 0">
                 <img [src]="songDetail.images[0].url" [alt]="songDetail.name" style="width:700px;height:650px;">
-                <h4>Spotify Followers: {{songDetail.followers.total}}</h4>
-                <h4>Genre: {{songDetail.genres[2]}}</h4>
-                <h4><a [href]="songDetail.external_urls.spotify" target="_blank">See on Spotify</a></h4>
+                <h4>Spotify Followers: {{songDetail.followers?.total}}</h4>
+                <h4>Genre: {{songDetail.genres?.[2]}}</h4>
+                <h4><a [href]="songDetail.external_urls?.spotify" target="_blank">See on Spotify</a></h4>
               </div>
               <br>
               <div *ngIf="songs && songs.length > 0">
