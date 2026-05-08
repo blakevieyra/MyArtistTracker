@@ -12,7 +12,6 @@ services:
     plan: free
     dockerfilePath: ./RESTArtistsTracker/Dockerfile
     dockerContext: .
-    healthCheckPath: /
     envVars:
       - key: DB_HOST
         fromDatabase:
