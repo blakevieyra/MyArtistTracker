@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 })
 export class SpotifyService {
   private clientId: string = 'a93962aa13c948e2be74922153604b4a';
-  private clientSecret: string = '41921268f68f418dac79ee10cb5a4073';
+  private clientSecret: string = '4a1fff2920f54ff190fbcd7a8bd2fb07';
   private tokenUrl: string = 'https://accounts.spotify.com/api/token';
   private searchUrl: string = 'https://api.spotify.com/v1/search';
 
