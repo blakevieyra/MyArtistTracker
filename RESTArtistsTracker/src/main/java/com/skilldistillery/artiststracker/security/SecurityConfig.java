@@ -42,8 +42,8 @@ public class SecurityConfig {
     
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        String userQuery = "SELECT username, password, enabled FROM user WHERE username=?";
-        String authQuery = "SELECT username, role FROM user WHERE username=?";
+        String userQuery = "SELECT username, password, enabled FROM \"user\" WHERE username=?";
+        String authQuery = "SELECT username, role FROM \"user\" WHERE username=?";
         auth
         .jdbcAuthentication()
         .dataSource(dataSource)
