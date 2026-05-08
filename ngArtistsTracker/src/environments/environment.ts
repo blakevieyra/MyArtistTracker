@@ -1,3 +1,3 @@
 export const environment = {
-  baseUrl: '/'
+  baseUrl: 'https://artiststracker-api.onrender.com/'
 };
