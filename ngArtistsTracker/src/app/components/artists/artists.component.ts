@@ -3,7 +3,7 @@ import { ArtistService } from './../../services/artist.service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Artist } from '../../models/artist';
 import { LoginComponent } from '../login/login.component';
 import { AuthService } from '../../services/auth.service';
@@ -21,6 +21,7 @@ import { Songs } from '../../models/songs';
     LoginComponent,
     RegisterComponent,
     SongsComponent,
+    RouterLink,
   ],
   templateUrl: './artists.component.html',
   styleUrl: './artists.component.css',

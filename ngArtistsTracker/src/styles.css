@@ -1,1 +1,74 @@
 /* You can add global styles to this file, and also import other style files */
+
+body {
+  background-image: url('https://static-cse.canva.com/blob/1277133/claybanksfEVaiLwWvlUunsplash.c290b6ea.avif');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+}
+
+.card {
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-title, .card-body, .card-footer {
+  color: white;
+}
+
+.list-group-item {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.table {
+  color: white;
+}
+
+.form-control, .form-select {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+}
+
+.nav-tabs .nav-link {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-tabs .nav-link.active {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.alert {
+  text-shadow: none;
+}
+
+.badge {
+  text-shadow: none;
+}
+
+.text-muted {
+  color: rgba(255, 255, 255, 0.7) !important;
+}

@@ -55,6 +55,7 @@
                 <br><small class="text-muted">{{ track.album?.name }} &middot; {{ formatDuration(track.duration_ms) }}</small>
               </div>
               <audio *ngIf="track.preview_url" [src]="track.preview_url" controls style="height:32px;width:200px;"></audio>
+              <a *ngIf="!track.preview_url && track.external_urls?.spotify" [href]="track.external_urls.spotify" target="_blank" class="btn btn-sm btn-outline-success">Play</a>
             </div>
           </div>
 
