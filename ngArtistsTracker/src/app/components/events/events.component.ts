@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ArtistEvent } from '../../models/event';
 import { EventService } from '../../services/event.service';
 import { AuthService } from '../../services/auth.service';
@@ -19,15 +20,24 @@ export class EventsComponent implements OnInit {
   searchKeyword: string = '';
   activeTab: string = 'upcoming';
   trackedIds: Set<number> = new Set();
+  stubhubLink: string = '';
 
   constructor(
     private eventService: EventService,
-    private auth: AuthService
+    private auth: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.loadUpcomingEvents();
     this.loadTrackedEvents();
+    this.route.queryParams.subscribe(params => {
+      if (params['artist']) {
+        this.searchKeyword = params['artist'];
+        this.stubhubLink = 'https://www.stubhub.com/search?q=' + encodeURIComponent(params['artist']);
+        this.searchEvents();
+      }
+    });
   }
 
   loggedIn(): boolean {

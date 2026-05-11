@@ -109,6 +109,10 @@ export class HomeComponent implements OnInit {
     this.artistAlbums = [];
   }
 
+  goToTickets(artistName: string): void {
+    this.route.navigate(['/events'], { queryParams: { artist: artistName } });
+  }
+
   getArtistImage(artist: any): string {
     return artist?.images?.[0]?.url || 'https://placehold.co/200x200/333/white?text=No+Image';
   }

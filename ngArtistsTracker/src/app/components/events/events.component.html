@@ -19,6 +19,11 @@
           Search Events
         </button>
       </div>
+      <div *ngIf="stubhubLink" class="text-center mt-2">
+        <a [href]="stubhubLink" target="_blank" class="btn btn-warning btn-sm">
+          Buy "{{ searchKeyword }}" tickets on StubHub
+        </a>
+      </div>
     </div>
   </div>
 

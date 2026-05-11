@@ -144,6 +144,10 @@ export class ArtistsComponent {
     });
   }
 
+  goToTickets(artistName: string): void {
+    this.router.navigate(['/events'], { queryParams: { artist: artistName } });
+  }
+
   loadArtistImages(): void {
     if (!this.token) return;
     this.artists.forEach(a => {

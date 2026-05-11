@@ -41,10 +41,7 @@
           </p>
           <a [href]="selectedArtist.external_urls?.spotify" target="_blank" class="btn btn-success btn-sm">Open in Spotify</a>
           <button class="btn btn-primary btn-sm ms-2" (click)="addToFavorites(selectedArtist)">+ Add to Favorites</button>
-          <a class="btn btn-warning btn-sm ms-2"
-            [href]="'https://www.stubhub.com/search?q=' + selectedArtist.name" target="_blank">
-            Buy Tickets
-          </a>
+          <button class="btn btn-warning btn-sm ms-2" (click)="goToTickets(selectedArtist.name)">See Tickets</button>
         </div>
 
         <!-- Top Tracks -->
