@@ -132,12 +132,11 @@
     </div>
     <div class="card-footer d-flex justify-content-between">
       <a
-        *ngIf="event.ticketUrl"
-        [href]="event.ticketUrl"
+        [href]="event.ticketUrl || 'https://www.stubhub.com/search?q=' + (event.artist?.name || event.name)"
         target="_blank"
-        class="btn btn-sm btn-outline-primary"
+        class="btn btn-sm btn-warning"
       >
-        Buy Tickets
+        Buy on StubHub
       </a>
       <button
         *ngIf="!isTracked(event)"
