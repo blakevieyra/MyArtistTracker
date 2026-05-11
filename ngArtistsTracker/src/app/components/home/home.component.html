@@ -63,7 +63,7 @@
           <h4 *ngIf="artistAlbums.length">Albums</h4>
           <div class="row" *ngIf="artistAlbums.length">
             <div class="col-4 col-md-3 mb-3" *ngFor="let album of artistAlbums.slice(0,8)">
-              <img [src]="album.images?.[0]?.url || 'https://via.placeholder.com/150'" class="img-fluid rounded shadow-sm" [alt]="album.name">
+              <img [src]="album.images?.[0]?.url || 'https://placehold.co/150x150/333/white?text=Album'" class="img-fluid rounded shadow-sm" [alt]="album.name">
               <small class="d-block mt-1 text-truncate"><strong>{{ album.name }}</strong></small>
               <small class="text-muted">{{ album.release_date?.substring(0,4) }}</small>
             </div>

@@ -110,11 +110,11 @@ export class HomeComponent implements OnInit {
   }
 
   getArtistImage(artist: any): string {
-    return artist?.images?.[0]?.url || 'https://via.placeholder.com/200?text=No+Image';
+    return artist?.images?.[0]?.url || 'https://placehold.co/200x200/333/white?text=No+Image';
   }
 
   getTrackImage(track: any): string {
-    return track?.album?.images?.[0]?.url || 'https://via.placeholder.com/60?text=No+Art';
+    return track?.album?.images?.[0]?.url || 'https://placehold.co/60x60/333/white?text=Art';
   }
 
   formatDuration(ms: number): string {

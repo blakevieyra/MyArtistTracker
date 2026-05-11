@@ -65,8 +65,13 @@ public class ArtistServiceImpl implements ArtistService {
 	@Override
 	public boolean destroy(String username, int id) {
 		boolean isDeleted = false;
-		if (artistRepo.existsByUsers_UsernameAndId(username, id)) {
-			artistRepo.deleteById(id);
+		Artist artist = artistRepo.findByUsers_UsernameAndId(username, id);
+		if (artist != null) {
+			User user = userRepo.findByUsername(username);
+			if (user != null && user.getFavoriteArtists() != null) {
+				user.getFavoriteArtists().remove(artist);
+				userRepo.saveAndFlush(user);
+			}
 			isDeleted = true;
 		}
 		return isDeleted;

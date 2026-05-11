@@ -31,15 +31,15 @@ public class Artist {
 	
 	@JsonIgnore
 	@ManyToMany(mappedBy = "favoriteArtists")
-    private List<User> users;
+    private List<User> users = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "artist")
-	private List<Song> songs;
+	private List<Song> songs = new ArrayList<>();
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "artist")
-	private List<Event> events;
+	private List<Event> events = new ArrayList<>();
 	
 
 	public void addUser(User user) {
